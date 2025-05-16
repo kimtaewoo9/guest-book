@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PageResponse {
+public class PostListResponseDto {
 
-    private List<Post> postList;
-    private int totalPage;
-    private int totalElements;
+    private List<Post> content; // 방명록 객체 배열 ..
+    private int totalPages;
+    private Long totalElements;
     private int size;
     private int number;
 }
