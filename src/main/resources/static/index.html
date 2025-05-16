@@ -4,497 +4,411 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>간편 방명록</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
         }
         body {
-            font-family: 'Roboto', 'Noto Sans KR', sans-serif;
             max-width: 760px;
-            margin: 20px auto;
-            padding: 0 15px;
-            background-color: #f8f9fa;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f4f6f8;
             color: #333;
-            line-height: 1.6;
         }
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 30px;
-            font-weight: 500;
+            margin-bottom: 40px;
+            font-size: 2.2em;
+            font-weight: 600;
         }
-
-        /* 모달 스타일 */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgba(0,0,0,0.5); 
-        }
-        .modal-content {
-            background-color: #fff;
-            margin: 10% auto;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            line-height: 1;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .modal-header {
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
-            font-size: 20px;
-            color: #333;
-        }
-
-        /* 폼 스타일 */
-        .form-container {
-            padding: 0;
+        .form-container, .guestbooks, .detail-view {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
         }
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 500;
-            color: #555;
+            color: #495057;
+            font-size: 0.9rem;
         }
-        input[type="text"], textarea, input[type="file"] {
+        input[type="text"],
+        input[type="file"],
+        textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 15px;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        input[type="file"] {
-            padding: 5px;
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        textarea:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+            outline: none;
         }
         textarea {
             height: 120px;
             resize: vertical;
         }
-        .button-container {
-            text-align: right;
-            margin-top: 20px;
-        }
-        button, .action-button {
-            background-color: #3498db;
+        button {
+            background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 20px;
             cursor: pointer;
-            border-radius: 4px;
-            font-size: 15px;
-            transition: background-color 0.2s ease;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: 500;
+            transition: background-color 0.2s ease;
         }
-        button:hover, .action-button:hover {
-            background-color: #2980b9;
-        }
-        .action-button {
-            display: block;
-            width: fit-content;
-            margin: 0 auto 30px auto;
-            background-color: #2ecc71;
-        }
-        .action-button:hover {
-            background-color: #27ae60;
+        button:hover {
+            background-color: #45a049;
         }
 
-        /* 방명록 리스트 스타일 */
-        .guestbooks-container {
-             background: white;
-             padding: 10px 20px 20px 20px;
-             border-radius: 8px;
-             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-             margin-bottom: 20px;
-        }
         .guestbook-item {
-            padding: 18px 0;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 20px 0;
+            border-bottom: 1px solid #f1f3f5;
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
         .guestbook-item:hover {
-            background-color: #f9f9f9;
+            background-color: #fbfcfd;
         }
         .guestbook-item:last-child {
             border-bottom: none;
         }
-        .guestbook-name-display { /* 이전 title 대신 name을 표시 */
-            font-weight: 500;
-            font-size: 18px;
-            color: #2c3e50;
-            margin-bottom: 5px;
+        .guestbook-author-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #343a40;
+            margin-bottom: 8px;
         }
         .guestbook-content-preview {
-            color: #555;
-            margin-bottom: 10px;
-            font-size: 15px;
-        }
-        .guestbook-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #495057;
+            font-size: 0.95rem;
         }
         .guestbook-image-indicator {
-            font-size: 13px;
-            color: #7f8c8d;
-        }
-        .guestbook-date {
-            color: #7f8c8d;
-            font-size: 13px;
+            font-size: 0.8rem;
+            color: #4CAF50;
+            margin-bottom: 8px;
+            display: inline-block;
         }
         .guestbook-image {
             max-width: 100%;
+            height: auto;
             max-height: 300px;
             margin-top: 15px;
-            border-radius: 4px;
-            border: 1px solid #eee;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        .guestbook-date {
+            color: #adb5bd;
+            font-size: 0.75rem;
+            text-align: right;
         }
         .loading, .no-entries {
             text-align: center;
-            padding: 30px 0;
-            color: #777;
-            font-size: 16px;
+            padding: 30px 20px;
+            color: #868e96;
+            font-size: 1rem;
         }
-
-        /* 페이지네이션 스타일 */
         .pagination {
             display: flex;
             justify-content: center;
+            align-items: center;
             margin-top: 30px;
-            padding-bottom: 20px;
+            padding: 10px 0;
         }
         .pagination button {
             margin: 0 4px;
             background-color: #e9ecef;
             color: #495057;
-            padding: 8px 12px;
-            font-size: 14px;
+            border: 1px solid #dee2e6;
+            min-width: 36px;
+            height: 36px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 500;
+            border-radius: 4px;
         }
         .pagination button.active {
-            background-color: #3498db;
+            background-color: #4CAF50;
             color: white;
-            font-weight: 500;
-            border: 1px solid #3498db;
+            border-color: #4CAF50;
         }
         .pagination button:disabled {
-            background-color: #f1f3f5;
-            color: #adb5bd;
+            background-color: #f8f9fa;
+            color: #ced4da;
+            border-color: #e9ecef;
             cursor: not-allowed;
         }
-        
-        /* 상세 보기 스타일 */
+        .pagination button:not(:disabled):hover {
+            background-color: #dee2e6;
+        }
+        .pagination button.active:not(:disabled):hover {
+            background-color: #45a049;
+        }
         .detail-view {
-            display: none; 
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            display: none;
         }
-        .detail-view .guestbook-name-display { /* 이전 title 대신 name을 표시 */
-            font-size: 22px;
-            margin-bottom: 15px; /* 이름 아래 내용과의 간격 */
-        }
-        .detail-view .guestbook-content {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #333;
+        #detailImageContainer {
+            text-align: center;
             margin-bottom: 15px;
-            white-space: pre-wrap; 
-        }
-        .detail-view .guestbook-date {
-            text-align: right;
-            margin-top: 15px;
         }
         .back-button {
-            background-color: #7f8c8d;
+            background-color: #6c757d;
             color: white;
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
+            font-weight: 500;
         }
         .back-button:hover {
-            background-color: #6c7a89;
+            background-color: #5a6268;
         }
-
     </style>
 </head>
 <body>
-    <h1>심플 방명록</h1>
+<h1>간편 방명록</h1>
 
-    <button id="openModalButton" class="action-button">방명록 작성하기</button>
-
-    <div id="guestbookModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                새 방명록 작성
-                <span class="close-button" id="closeModalButton">&times;</span>
-            </div>
-            <div class="form-container">
-                <form id="guestbookForm">
-                    <div class="form-group">
-                        <label for="name">이름</label> <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="content">내용</label>
-                        <textarea id="content" name="content" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="image">이미지 (선택)</label>
-                        <input type="file" id="image" name="image" accept="image/*">
-                    </div>
-                    <div class="button-container">
-                        <button type="submit">등록하기</button>
-                    </div>
-                </form>
-            </div>
+<div class="form-container">
+    <form id="guestbookForm">
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required>
         </div>
-    </div>
-
-    <div id="detailView" class="detail-view">
-        <button class="back-button" id="backButton">목록으로</button>
-        <div class="guestbook-name-display" id="detailName"></div> 
-        <div class="guestbook-content" id="detailContent"></div>
-        <div id="detailImageContainer" style="text-align: center;">
-            <img id="detailImage" class="guestbook-image" alt="첨부 이미지">
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea id="content" name="content" required></textarea>
         </div>
-        <div class="guestbook-date" id="detailDate"></div>
-    </div>
-    
-    <div class="guestbooks-container">
-        <div id="guestbooksList">
-            <div class="loading">방명록 불러오는 중...</div>
+        <div class="form-group">
+            <label for="image">이미지 (선택)</label>
+            <input type="file" id="image" name="image" accept="image/*">
         </div>
+        <button type="submit">등록하기</button>
+    </form>
+</div>
+
+<div id="detailView" class="detail-view">
+    <button class="back-button" id="backButton">목록으로</button>
+    <div class="guestbook-header">
+        <div class="guestbook-author" id="detailAuthor" style="font-size: 1.2em; font-weight: bold; margin-bottom: 10px;"></div>
     </div>
-    
-    <div class="pagination" id="pagination"></div>
+    <div class="guestbook-content" id="detailContent"></div>
+    <div id="detailImageContainer">
+        <img id="detailImage" class="guestbook-image" alt="첨부 이미지">
+    </div>
+    <div class="guestbook-date" id="detailDate"></div>
+</div>
 
-    <script>
-        let currentPage = 0;
-        let totalPages = 0;
+<div class="guestbooks" id="guestbooksList">
+    <div class="loading">방명록 불러오는 중...</div>
+</div>
 
-        const modal = document.getElementById('guestbookModal');
-        const openModalButton = document.getElementById('openModalButton');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const guestbookForm = document.getElementById('guestbookForm');
-        
-        const guestbookListView = document.getElementById('guestbooksList');
-        const paginationView = document.getElementById('pagination');
-        const detailView = document.getElementById('detailView');
-        const backButton = document.getElementById('backButton');
+<div class="pagination" id="pagination"></div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            fetchGuestbooks(currentPage);
-            
-            openModalButton.onclick = function() {
-                modal.style.display = "block";
-            }
-            closeModalButton.onclick = function() {
-                modal.style.display = "none";
-                guestbookForm.reset();
-            }
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                    guestbookForm.reset();
-                }
-            }
-            
-            guestbookForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                submitGuestbook();
-            });
-            
-            backButton.addEventListener('click', function() {
-                showListView();
-            });
+<script>
+    let currentPage = 0;
+    let totalPages = 0;
+    const guestbookListView = document.getElementById('guestbooksList');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchGuestbooks(currentPage);
+
+        document.getElementById('guestbookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitGuestbook();
         });
 
-        function showListView() {
-            detailView.style.display = 'none';
-            openModalButton.style.display = 'block';
-            document.querySelector('.guestbooks-container').style.display = 'block';
-            paginationView.style.display = 'flex';
+        document.getElementById('backButton').addEventListener('click', function() {
+            document.getElementById('detailView').style.display = 'none';
+            guestbookListView.style.display = 'block';
+            document.getElementById('pagination').style.display = 'flex';
+        });
+    });
+
+    function fetchGuestbooks(page) {
+        guestbookListView.innerHTML = '<div class="loading">방명록 불러오는 중...</div>';
+
+        fetch(`/api/guestbooks?page=${page}&size=5`)
+        .then(response => response.json())
+        .then(data => {
+            currentPage = data.number;
+            totalPages = data.totalPages;
+            displayGuestbooks(data.content);
+            displayPagination();
+        })
+        .catch(error => {
+            console.error('Error fetching guestbooks:', error);
+            guestbookListView.innerHTML = '<div class="loading">방명록을 불러오는데 실패했습니다.</div>';
+        });
+    }
+
+    function displayGuestbooks(guestbooks) {
+        if (guestbooks.length === 0 && currentPage === 0) {
+            guestbookListView.innerHTML = '<div class="no-entries loading">등록된 방명록이 없습니다. 첫 번째 글을 작성해보세요!</div>';
+            return;
         }
 
-        function showDetailView() {
-            detailView.style.display = 'block';
-            openModalButton.style.display = 'none';
-            document.querySelector('.guestbooks-container').style.display = 'none';
-            paginationView.style.display = 'none';
-        }
-        
-        function fetchGuestbooks(page) {
-            guestbookListView.innerHTML = '<div class="loading">방명록 불러오는 중...</div>';
-            
-            fetch(`/api/guestbooks?page=${page}&size=5`)
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    currentPage = data.number;
-                    totalPages = data.totalPages;
-                    displayGuestbooks(data.content);
-                    displayPagination();
-                    showListView();
-                })
-                .catch(error => {
-                    console.error('Error fetching guestbooks:', error);
-                    guestbookListView.innerHTML = '<div class="no-entries">방명록을 불러오는데 실패했습니다.</div>';
-                });
-        }
-        
-        function displayGuestbooks(guestbooks) {
-            if (guestbooks.length === 0 && currentPage === 0) {
-                guestbookListView.innerHTML = '<div class="no-entries">등록된 방명록이 없습니다. 첫 번째 글을 작성해보세요!</div>';
-                return;
-            }
-            
-            guestbookListView.innerHTML = ''; 
-            
-            guestbooks.forEach(guestbook => {
-                const formattedDate = new Date(guestbook.createdAt).toLocaleString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                
-                const guestbookElement = document.createElement('div');
-                guestbookElement.className = 'guestbook-item';
-                // 제목 대신 이름 표시
-                guestbookElement.innerHTML = `
-                    <div class="guestbook-name-display">${guestbook.name}</div> 
-                    <div class="guestbook-content-preview">${guestbook.content.length > 80 ? guestbook.content.substring(0, 80) + '...' : guestbook.content}</div>
-                    <div class="guestbook-meta">
-                        <div class="guestbook-image-indicator">${guestbook.imageUrl ? '🖼️ 이미지 있음' : '📄 텍스트만'}</div>
-                        <div class="guestbook-date">${formattedDate}</div>
-                    </div>
-                `;
-                
-                guestbookElement.addEventListener('click', function() {
-                    viewGuestbookDetail(guestbook.id);
-                });
-                
-                guestbookListView.appendChild(guestbookElement);
-            });
-        }
-        
-        function displayPagination() {
-            paginationView.innerHTML = '';
-            if (totalPages <= 0) return;
+        guestbookListView.innerHTML = '';
 
-            const createButton = (text, pageNum, isDisabled = false, isActive = false) => {
-                const button = document.createElement('button');
-                button.textContent = text;
-                button.disabled = isDisabled;
-                if (isActive) button.classList.add('active');
-                button.addEventListener('click', () => fetchGuestbooks(pageNum));
-                return button;
-            };
-
-            paginationView.appendChild(createButton('처음', 0, currentPage === 0));
-            paginationView.appendChild(createButton('이전', currentPage - 1, currentPage === 0));
-
-            let startPage = Math.max(0, currentPage - 2);
-            let endPage = Math.min(totalPages - 1, currentPage + 2);
-            if (currentPage < 2) endPage = Math.min(totalPages - 1, 4);
-            if (currentPage > totalPages - 3) startPage = Math.max(0, totalPages - 5);
-            
-            for (let i = startPage; i <= endPage; i++) {
-                paginationView.appendChild(createButton(i + 1, i, false, i === currentPage));
-            }
-
-            paginationView.appendChild(createButton('다음', currentPage + 1, currentPage >= totalPages - 1));
-            paginationView.appendChild(createButton('끝', totalPages - 1, currentPage >= totalPages - 1));
-        }
-        
-        function submitGuestbook() {
-            const formData = new FormData(guestbookForm);
-            // 'name' 필드는 HTML form에 있으므로 자동으로 FormData에 포함됩니다.
-            // 'title' 필드는 HTML form에서 제거되었으므로 자동으로 포함되지 않습니다.
-            
-            if (!formData.get('image') || !formData.get('image').size) {
-                formData.delete('image');
-            }
-            
-            fetch('/api/guestbooks', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.status === 201) return response.json();
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(`Server error: ${response.status} - ${text}`) });
+        guestbooks.forEach(guestbook => {
+            let formattedDate = '날짜 정보 없음';
+            if (guestbook.createdAt) {
+                try {
+                    formattedDate = new Date(guestbook.createdAt).toLocaleString('ko-KR', {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                } catch (e) {
+                    console.error("날짜 포맷 오류:", guestbook.createdAt, e);
                 }
-                return response.json(); 
-            })
-            .then(data => {
-                guestbookForm.reset();
-                modal.style.display = "none"; 
-                fetchGuestbooks(0); 
-                alert('방명록이 성공적으로 등록되었습니다.');
-            })
-            .catch(error => {
-                console.error('Error submitting guestbook:', error);
-                alert('방명록 등록에 실패했습니다. 내용을 확인해주세요. (' + error.message + ')');
+            }
+
+            const guestbookElement = document.createElement('div');
+            guestbookElement.className = 'guestbook-item';
+            guestbookElement.innerHTML = `
+                    <div class="guestbook-author-name">${guestbook.name}</div>
+                    <div class="guestbook-content-preview">${guestbook.content.length > 80 ? guestbook.content.substring(0, 80) + '...' : guestbook.content}</div>
+                    ${guestbook.imageUrl ? '<div class="guestbook-image-indicator">📷 이미지가 첨부되어 있습니다.</div>' : ''}
+                    <div class="guestbook-date">${formattedDate}</div>
+                `;
+
+            guestbookElement.addEventListener('click', function() {
+                viewGuestbookDetail(guestbook.id);
             });
+
+            guestbookListView.appendChild(guestbookElement);
+        });
+    }
+
+    function displayPagination() {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        if (totalPages === 0) return;
+
+        const firstButton = document.createElement('button');
+        firstButton.textContent = '처음';
+        firstButton.disabled = currentPage === 0;
+        firstButton.addEventListener('click', () => fetchGuestbooks(0));
+        paginationContainer.appendChild(firstButton);
+
+        const prevButton = document.createElement('button');
+        prevButton.textContent = '이전';
+        prevButton.disabled = currentPage === 0;
+        prevButton.addEventListener('click', () => fetchGuestbooks(currentPage - 1));
+        paginationContainer.appendChild(prevButton);
+
+        const currentPageSpan = document.createElement('button');
+        currentPageSpan.textContent = (currentPage + 1) + ' / ' + totalPages;
+        currentPageSpan.classList.add('active');
+        currentPageSpan.disabled = true;
+        paginationContainer.appendChild(currentPageSpan);
+
+        const nextButton = document.createElement('button');
+        nextButton.textContent = '다음';
+        nextButton.disabled = currentPage >= totalPages - 1;
+        nextButton.addEventListener('click', () => fetchGuestbooks(currentPage + 1));
+        paginationContainer.appendChild(nextButton);
+
+        const lastButton = document.createElement('button');
+        lastButton.textContent = '끝';
+        lastButton.disabled = currentPage >= totalPages - 1;
+        lastButton.addEventListener('click', () => fetchGuestbooks(totalPages - 1));
+        paginationContainer.appendChild(lastButton);
+    }
+
+    function submitGuestbook() {
+        const form = document.getElementById('guestbookForm');
+        const nameInput = document.getElementById('name');
+        const contentInput = document.getElementById('content');
+
+        const formData = new FormData();
+        formData.append('name', nameInput.value);
+        formData.append('content', contentInput.value);
+
+        const imageFile = document.getElementById('image').files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
         }
-        
-        function viewGuestbookDetail(id) {
-            fetch(`/api/guestbooks/${id}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(guestbook => {
-                    const formattedDate = new Date(guestbook.createdAt).toLocaleString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    
-                    // 제목 대신 이름 표시
-                    document.getElementById('detailName').textContent = guestbook.name; 
-                    document.getElementById('detailContent').innerHTML = guestbook.content.replace(/\n/g, '<br>');
-                    document.getElementById('detailDate').textContent = formattedDate;
-                    
-                    const imageContainer = document.getElementById('detailImageContainer');
-                    const imageEl = document.getElementById('detailImage');
-                    
-                    if (guestbook.imageUrl) {
-                        imageEl.src = guestbook.imageUrl;
-                        imageEl.alt = guestbook.name; // alt 텍스트를 이름으로 변경
-                        imageContainer.style.display = 'block';
-                    } else {
-                        imageEl.src = "";
-                        imageContainer.style.display = 'none';
-                    }
-                    
-                    showDetailView();
-                })
-                .catch(error => {
-                    console.error('Error fetching guestbook detail:', error);
-                    alert('방명록 상세 정보를 불러오는데 실패했습니다.');
-                });
-        }
-    </script>
+
+        fetch('/api/guestbooks', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            form.reset();
+            fetchGuestbooks(0);
+            alert('방명록이 성공적으로 등록되었습니다.');
+        })
+        .catch(error => {
+            console.error('Error submitting guestbook:', error);
+            const errorMessage = error.message || (error.errors && error.errors.length > 0 ? error.errors[0].defaultMessage : '방명록 등록에 실패했습니다. 입력값을 확인해주세요.');
+            alert(errorMessage);
+        });
+    }
+
+    function viewGuestbookDetail(id) {
+        fetch(`/api/guestbooks/${id}`)
+        .then(response => response.json())
+        .then(guestbook => {
+            const detailView = document.getElementById('detailView');
+            let formattedDate = '날짜 정보 없음';
+            if (guestbook.createdAt) {
+                try {
+                    formattedDate = new Date(guestbook.createdAt).toLocaleString('ko-KR', {
+                        year: 'numeric', month: 'long', day: 'numeric',
+                        hour: '2-digit', minute: '2-digit', second: '2-digit'
+                    });
+                } catch (e) {
+                    console.error("상세보기 날짜 포맷 오류:", guestbook.createdAt, e);
+                }
+            }
+
+            document.getElementById('detailAuthor').textContent = guestbook.name;
+            document.getElementById('detailContent').textContent = guestbook.content;
+            document.getElementById('detailDate').textContent = formattedDate;
+
+            const imageContainer = document.getElementById('detailImageContainer');
+            const imageElement = document.getElementById('detailImage');
+
+            if (guestbook.imageUrl) {
+                imageElement.src = guestbook.imageUrl;
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+                imageElement.src = '';
+            }
+
+            guestbookListView.style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            detailView.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error fetching guestbook detail:', error);
+            alert('방명록 상세 정보를 불러오는데 실패했습니다.');
+        });
+    }
+</script>
 </body>
 </html>

@@ -3,6 +3,7 @@ package guestbook.demo.entity;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @NoArgsConstructor
@@ -21,6 +23,7 @@ import org.springframework.data.annotation.CreatedDate;
 @Builder
 @Getter
 @Table(name ="post")
+@EntityListeners(AuditingEntityListener.class) // Auditing 리스너를 엔티티에 등록합니다.
 public class Post {
 
     @Id
@@ -33,9 +36,9 @@ public class Post {
     @Column(nullable = false)
     private String content; // 필수
 
-    private String filename; // 데이터베이스에 url만 저장 .
+    private String imageUrl; // 데이터베이스에 url만 저장 .
 
     @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }
